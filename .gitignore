@@ -20,3 +20,9 @@ __pycache__/
 # PyCharm
 .idea/
 
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Other files to ignore
+*.log
+*.DS_Store
