@@ -150,9 +150,77 @@ st.plotly_chart(fig4, use_container_width=True)
 
 
 # Side by Side Distplot for property type
-st.header('Side by Side Distplot for property type')
-fig4 = plt.figure(figsize=(10, 4))
-sns.histplot(new_df[new_df['property_type'] == 'house']['price'], label='house', kde=True)
-sns.histplot(new_df[new_df['property_type'] == 'flat']['price'], label='flat', kde=True)
-plt.legend()
-st.pyplot(fig4)
+st.header('Side-by-Side Distribution Plot for Property Type (Price Range)')
+
+# Dropdown for selecting the sector
+selected_sector_distplot = st.selectbox(
+    'Select Sector:',
+    ['Overall'] + new_df['sector'].unique().tolist(),
+    key='select_sector_distplot'
+)
+
+# Filter the data based on the selected sector
+if selected_sector_distplot == 'Overall':
+    filtered_df_distplot = new_df
+else:
+    filtered_df_distplot = new_df[new_df['sector'] == selected_sector_distplot]
+
+# Create the distribution plot
+fig5, ax = plt.subplots(figsize=(10, 6))
+for property_type in filtered_df_distplot['property_type'].unique():
+    sns.kdeplot(
+        filtered_df_distplot[filtered_df_distplot['property_type'] == property_type]['price'],
+        ax=ax,
+        label=property_type,
+        fill=False
+    )
+
+ax.set_title('Price Range Distribution by Property Type')
+ax.set_xlabel('Price')
+ax.set_ylabel('Density')
+ax.legend()
+
+# Display the distribution plot
+st.pyplot(fig5)
+
+
+import folium
+from folium import plugins
+from streamlit_folium import folium_static
+
+st.header('Visualizing Gurgaon Sectors on Map')
+
+# Set the center coordinates for Gurgaon
+gurgaon_center = [28.4595, 77.0266]
+
+# Create a Folium map centered around Gurgaon
+m = folium.Map(location=gurgaon_center, zoom_start=13)
+
+# Add title
+title_html = '''
+<h3 align="center" style="font-size:20px"><b>Gurgaon Sectors Map</b></h3>
+'''
+m.get_root().html.add_child(folium.Element(title_html))
+
+# Add custom marker icon
+marker_icon = folium.CustomIcon(
+    icon_image='https://imageurl.com/custom_marker_icon.png',
+    icon_size=(30, 30),
+    icon_anchor=(15, 30),
+)
+
+# Add markers for each sector with custom icon
+for index, row in new_df.iterrows():
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=row['sector'],
+        icon=marker_icon
+    ).add_to(m)
+
+# Beautify the map with plugins (optional)
+plugins.Fullscreen(position='topright', force_separate_button=True).add_to(m)
+plugins.MousePosition().add_to(m)
+plugins.MiniMap(toggle_display=True).add_to(m)
+
+# Display the map
+folium_static(m)
