@@ -13,8 +13,8 @@ with open('df.pkl', 'rb') as file:
     df = pickle.load(file)
 
 # Add home image
-st.image("/Users/nimishasingh/PycharmProjects/RealEstateGurgaonApp/home.jpg", use_column_width=True)
-
+# Add home image
+st.image("home.jpg", use_column_width=True)
 
 # Page Title
 st.markdown("<h1 style='color:#009688;'>Welcome to Gurgaon Real Estate Insight Hub!👋</h1>", unsafe_allow_html=True)
