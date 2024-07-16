@@ -183,7 +183,7 @@ ax.legend()
 # Display the distribution plot
 st.pyplot(fig5)
 
-
+#Visualizing Gurgaon Sectors on Map
 import folium
 from folium import plugins
 from streamlit_folium import folium_static
@@ -224,3 +224,39 @@ plugins.MiniMap(toggle_display=True).add_to(m)
 
 # Display the map
 folium_static(m)
+
+#FurnishingTypeAnalysis
+st.header('Furnishing Type Analysis')
+
+# Dropdown for selecting the sector
+selected_sector_furnishing = st.selectbox(
+    'Select Sector:',
+    ['Overall'] + new_df['sector'].unique().tolist(),
+    key='furnishing_sector'
+)
+
+# Filter the data based on the selected sector
+if selected_sector_furnishing == 'Overall':
+    filtered_df_furnishing = new_df
+else:
+    filtered_df_furnishing = new_df[new_df['sector'] == selected_sector_furnishing]
+
+# Map furnishing type codes to labels
+furnishing_labels = {0: 'Unfurnished', 1: 'Semi-Furnished', 2: 'Furnished'}
+filtered_df_furnishing['furnishing_label'] = filtered_df_furnishing['furnishing_type'].map(furnishing_labels)
+
+# Concatenate numerical code and label for display
+filtered_df_furnishing['display_label'] = (
+    filtered_df_furnishing['furnishing_type'].astype(str) + '-' + filtered_df_furnishing['furnishing_label']
+)
+
+# Create the pie chart
+fig_furnishing_streamlit = px.pie(
+    filtered_df_furnishing,
+    names='display_label',
+    title=f'Furnishing Type Distribution in {selected_sector_furnishing} Sector',
+    labels={'display_label': 'Furnishing Type'},
+)
+
+# Display the pie chart
+st.plotly_chart(fig_furnishing_streamlit, use_container_width=True)
