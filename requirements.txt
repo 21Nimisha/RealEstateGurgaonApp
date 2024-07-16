@@ -58,3 +58,4 @@ plotly
 wordcloud
 matplotlib
 seaborn
+folium
