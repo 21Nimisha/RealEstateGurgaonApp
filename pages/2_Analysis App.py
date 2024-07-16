@@ -71,15 +71,33 @@ else:
 
 # Area Vs Price
 st.header('Area Vs Price')
-property_type = st.selectbox('Select Property Type', ['flat', 'house'])
-if property_type == 'house':
-    fig1 = px.scatter(new_df[new_df['property_type'] == 'house'], x="built_up_area", y="price", color="bedRoom",
-                      title="Area Vs Price")
-    st.plotly_chart(fig1, use_container_width=True)
+
+# Dropdown for property type
+property_type = st.selectbox('Select Property Type', ['flat', 'house'], key='property_type')
+
+# Dropdown for sector with an overall option
+selected_sector = st.selectbox('Select Sector', ['overall'] + new_df['sector'].unique().tolist(), key='selected_sector')
+
+if selected_sector == 'overall':
+    # Create an overall view for all sectors
+    fig1 = px.scatter(new_df[new_df['property_type'] == property_type], x="built_up_area", y="price",
+                      color="bedRoom", size="price_per_sqft", title="Area Vs Price - Overall")
 else:
-    fig1 = px.scatter(new_df[new_df['property_type'] == 'flat'], x="built_up_area", y="price", color="bedRoom",
-                      title="Area Vs Price")
-    st.plotly_chart(fig1, use_container_width=True)
+    # Filter data based on selected sector
+    filtered_df = new_df[(new_df['property_type'] == property_type) & (new_df['sector'] == selected_sector)]
+
+    if property_type == 'house':
+        fig1 = px.scatter(filtered_df[filtered_df['property_type'] == 'house'], x="built_up_area", y="price",
+                          color="bedRoom", size="price_per_sqft", title=f"Area Vs Price - {selected_sector}")
+    else:
+        fig1 = px.scatter(filtered_df[filtered_df['property_type'] == 'flat'], x="built_up_area", y="price",
+                          color="bedRoom", size="price_per_sqft", title=f"Area Vs Price - {selected_sector}")
+
+# Plotly chart
+st.plotly_chart(fig1, use_container_width=True)
+
+# Adding tooltip to see additional information like bedroom, price, area
+fig1.update_traces(hovertemplate='<b>Price:</b> %{y:$,.0f}<br><b>Area:</b> %{x:.2f} sqft<br><b>Bedrooms:</b> %{marker.color}')
 
 # BHK Pie Chart
 st.header('BHK Pie Chart')
