@@ -111,10 +111,43 @@ else:
     fig2 = px.pie(new_df[new_df['sector'] == selected_sector], names='bedRoom')
     st.plotly_chart(fig2, use_container_width=True)
 
+
+
 # Side by Side BHK price comparison
-st.header('Side by Side BHK price comparison')
-fig3 = px.box(new_df[new_df['bedRoom'] <= 4], x='bedRoom', y='price', title='BHK Price Range')
+st.header('Side by Side BHK Price Comparison')
+
+# Dropdown for selecting the sector
+selected_sector_boxplot = st.selectbox('Select Sector:', ['Overall'] + new_df['sector'].unique().tolist())
+
+# Filter the data based on the selected sector
+if selected_sector_boxplot == 'Overall':
+    filtered_df_boxplot = new_df[new_df['bedRoom'] <= 4]
+else:
+    filtered_df_boxplot = new_df[(new_df['bedRoom'] <= 4) & (new_df['sector'] == selected_sector_boxplot)]
+
+# Create the boxplot
+fig3 = px.box(filtered_df_boxplot, x='bedRoom', y='price', title='BHK Price Range')
+
+# Display the boxplot
 st.plotly_chart(fig3, use_container_width=True)
+
+st.header('Histogram for Property Type (Price Range)')
+
+# Dropdown for selecting the sector
+selected_sector_histogram = st.selectbox('Select Sector:', ['Overall'] + new_df['sector'].unique().tolist(), key='select_sector_histogram')
+
+# Filter the data based on the selected sector
+if selected_sector_histogram == 'Overall':
+    filtered_df_histogram = new_df
+else:
+    filtered_df_histogram = new_df[new_df['sector'] == selected_sector_histogram]
+
+# Create the histogram
+fig4 = px.histogram(filtered_df_histogram, x='price', color='property_type', marginal='rug', title='Price Range Distribution by Property Type')
+
+# Display the histogram
+st.plotly_chart(fig4, use_container_width=True)
+
 
 # Side by Side Distplot for property type
 st.header('Side by Side Distplot for property type')
