@@ -21,7 +21,26 @@ st.markdown("<h1 style='color:#009688;'>Welcome to Gurgaon Real Estate Insight H
 
 
 # Introduction
-st.write("Explore and analyze Gurgaon real estate data to make informed decisions about your next property investment.")
+st.write("Welcome to the Real Estate Gurgaon App repository! This project aims to simplify property search in Gurgaon, India, using machine learning algorithms. Explore our modules designed to enhance your property buying experience. Analyze Gurgaon real estate data to make informed decisions about your next property investment.")
+
+# Modules Overview
+st.header('Modules Overview')
+
+## Price Prediction Module
+st.subheader('1. Price Prediction Module')
+st.write("- Predicts property prices based on user-defined criteria (e.g., number of rooms, square footage, location preferences, floor level).")
+st.write("- Provides tailored recommendations based on sector-specific data.")
+
+## Analytics Module
+st.subheader('2. Analytics Module')
+st.write("- **Spatial Analysis**: Visualize Gurgaon sectors colored by property prices for informed decision-making.")
+st.write("- **Price Distribution Across Sectors**: Box plots showing price variations across different sectors.")
+st.write("- **Price Vs Square Foot Analysis**: Scatter plots to analyze price correlation with property square footage.")
+st.write("- **Number of Rooms Pie Chart**: Insights into distribution of property sizes across Gurgaon sectors.")
+
+## Recommendation System Module
+st.subheader('3. Recommendation System Module')
+st.write("- Recommends properties based on user preferences and similarity in amenities between different societies.")
 
 # Data Overview
 st.subheader("Data Overview:")
