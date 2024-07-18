@@ -1,6 +1,26 @@
 # Real Estate Gurgaon App
 
-Welcome to the Real Estate Gurgaon App repository! This project focuses on real estate analytics, price prediction, and property recommendations in Gurgaon, India.
+Welcome to the Real Estate Gurgaon App repository! This project aims to simplify property search in Gurgaon, India, using machine learning algorithms. Explore my modules designed to enhance your property buying experience:
+
+## Modules Overview
+
+1. **Analytics Module**
+   - **Spatial Analysis**: Visualize Gurgaon sectors colored by property prices for informed decision-making.
+   - **Price Distribution Across Sectors**: Box plots showing price variations across different sectors.
+   - **Price Vs Square Foot Analysis**: Scatter plots to analyze price correlation with property square footage.
+   - **Number of Rooms Pie Chart**: Insights into distribution of property sizes across Gurgaon sectors.
+
+2. **Insight Module**
+   - Utilizes machine learning, especially regression models, for feature selection and analysis.
+   - Understand how property features like room count, amenities, facing direction, and proximity to services impact prices.
+
+3. **Price Prediction Module**
+   - Predicts property prices based on user-defined criteria (e.g., number of rooms, square footage, location preferences, floor level).
+   - Provides tailored recommendations based on sector-specific data.
+
+4. **Recommendation System Module**
+   - Recommends properties based on user preferences and similarity in amenities between different societies.
+
 
 ## Project Structure
 
