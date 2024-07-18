@@ -1,20 +1,16 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import numpy as np
 
-st.set_page_config(page_title="Recommend Appartments")
+# Load data
+location_df = pickle.load(open('datasets/location_distance.pkl', 'rb'))
+cosine_sim1 = pickle.load(open('datasets/cosine_sim1.pkl', 'rb'))
+cosine_sim2 = pickle.load(open('datasets/cosine_sim2.pkl', 'rb'))
+cosine_sim3 = pickle.load(open('datasets/cosine_sim3.pkl', 'rb'))
 
-location_df = pickle.load(open('datasets/location_distance.pkl','rb'))
-
-cosine_sim1 = pickle.load(open('datasets/cosine_sim1.pkl','rb'))
-cosine_sim2 = pickle.load(open('datasets/cosine_sim2.pkl','rb'))
-cosine_sim3 = pickle.load(open('datasets/cosine_sim3.pkl','rb'))
-
-
+# Function to recommend properties with scores
 def recommend_properties_with_scores(property_name, top_n=5):
     cosine_sim_matrix = 0.5 * cosine_sim1 + 0.8 * cosine_sim2 + 1 * cosine_sim3
-    # cosine_sim_matrix = cosine_sim3
 
     # Get the similarity scores for the property using its name as the index
     sim_scores = list(enumerate(cosine_sim_matrix[location_df.index.get_loc(property_name)]))
@@ -31,33 +27,76 @@ def recommend_properties_with_scores(property_name, top_n=5):
 
     # Create a dataframe with the results
     recommendations_df = pd.DataFrame({
-        'PropertyName': top_properties,
-        'SimilarityScore': top_scores
+        'Property Name': top_properties,
+        'Similarity Score': top_scores
     })
 
     return recommendations_df
 
+# Streamlit app
+st.set_page_config(page_title="Recommend Apartments", layout="wide")
 
-# Test the recommender function using a property name
-recommend_properties_with_scores('DLF The Camellias')
+# Title for the location and radius selection with color, bold, and background color
+st.title('**Select Location and Radius**')
+st.markdown('<style>h1{color:#4285f4;background-color:#f0f0f0;}</style>', unsafe_allow_html=True)
 
+# Dropdown for selecting location
+selected_location = st.selectbox('**Location**', sorted(location_df.columns.to_list()))
 
-st.title('Select Location and Radius')
+# Numeric input for selecting radius
+radius = st.number_input('**Radius in kms**')
 
-selected_location = st.selectbox('Location',sorted(location_df.columns.to_list()))
+# Button to trigger the location-based search
+if st.button('**Search by Location**'):
+    result_ser = location_df[location_df[selected_location] < radius * 1000][selected_location].sort_values()
 
-radius = st.number_input('Radius in Kms')
+    # Display search results with color, bold, and background color
+    st.markdown(f"**Search Results:**")
 
-if st.button('Search'):
-    result_ser = location_df[location_df[selected_location] < radius*1000][selected_location].sort_values()
+    # Convert values from meters to kilometers
+    result_ser_km = result_ser / 1000
 
-    for key, value in result_ser.items():
-        st.text(str(key) + " " + str(round(value/1000)) + ' kms')
+    for key, value in result_ser_km.items():
+        st.text(str(key) + " " + str(round(value, 2)) + ' km')
 
-st.title('Recommend Appartments')
-selected_appartment = st.selectbox('Select an appartment',sorted(location_df.index.to_list()))
+    # Display the result in a dataframe
+    st.dataframe(result_ser_km)
 
-if st.button('Recommend'):
-    recommendation_df = recommend_properties_with_scores(selected_appartment)
+# Title for the recommendation section with color, bold, and background color
+st.title('**Recommend Apartments**')
+st.markdown('<style>h1{color:#4285f4;background-color:#f0f0f0;}</style>', unsafe_allow_html=True)
 
+# Dropdown for selecting an apartment
+selected_apartment = st.selectbox('**Select an Apartment**', sorted(location_df.index.to_list()))
+
+# Button to trigger the recommendations
+if st.button('**Recommend**'):
+    recommendation_df = recommend_properties_with_scores(selected_apartment)
+
+    # Display recommendations in a formatted way with color, bold, and background color
+    st.subheader('**Top Recommendations:**')
+
+    # Apply CSS styling for the DataFrame
+    css = """
+    <style>
+    .dataframe th {
+        font-weight: bold;
+        border: 1px solid #3498db;
+        padding: 8px;
+        text-align: left;
+        background-color: #3498db;
+        color: #ffffff;
+    }
+    .dataframe td {
+        font-weight: bold;
+        border: 1px solid #3498db;
+        padding: 8px;
+        text-align: left;
+    }
+    </style>
+    """
+
+    st.markdown(css, unsafe_allow_html=True)
+
+    # Display the result DataFrame
     st.dataframe(recommendation_df)
