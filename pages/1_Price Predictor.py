@@ -31,9 +31,9 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
+#st.dataframe(df)
 # Main content
-st.header('Enter Your Inputs')
+st.header('Enter your inputs')
 
 # Property type
 property_type = st.selectbox('Property Type', ['flat', 'house'])
@@ -77,7 +77,7 @@ if st.button('Predict'):
     data = [[property_type, sector, bedrooms, bathroom, balcony, property_age, built_up_area,
              servant_room, store_room, furnishing_type, luxury_category, floor_category]]
     columns = ['property_type', 'sector', 'bedRoom', 'bathroom', 'balcony', 'agePossession',
-               'built_up_area', 'servant_room', 'store_room', 'furnishing_type', 'luxury_category', 'floor_category']
+               'built_up_area', 'servant room', 'store room', 'furnishing_type', 'luxury_category', 'floor_category']
 
     # Convert to DataFrame
     one_df = pd.DataFrame(data, columns=columns)
